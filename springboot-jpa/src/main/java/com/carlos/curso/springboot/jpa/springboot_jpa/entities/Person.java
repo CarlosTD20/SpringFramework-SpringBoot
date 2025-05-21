@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CollectionId;
 import org.hibernate.annotations.IdGeneratorType;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "persons")
 public class Person {
@@ -15,6 +17,9 @@ public class Person {
     private String lastname;
     @Column(name = "programming_language")
     private String programmingLanguage;
+
+    @Embedded
+    private Audit audit = new Audit();
 
     public Person() {
     }
@@ -63,6 +68,7 @@ public class Person {
         this.programmingLanguage = programmingLanguage;
     }
 
+
     @Override
     public String toString() {
         return "Person{" +
@@ -70,6 +76,8 @@ public class Person {
                 ", name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", programmingLanguage='" + programmingLanguage + '\'' +
+                ", creatAt=" + audit.getCreatAt() +
+                ", updatedAt=" + audit.getUpdatedAt() +
                 '}';
     }
 }

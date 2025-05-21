@@ -28,7 +28,7 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 //		list();
 //		findOne();
-//		create();
+		create();
 //		update();
 //		delete();
 //		delete2();
@@ -39,7 +39,7 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 //		personalizedQueryBetween();
 //		queriesFuncionesAgregacion();
 //		subQueries();
-		whereIn();
+//		whereIn();
 	}
 
 	@Transactional(readOnly = true)
