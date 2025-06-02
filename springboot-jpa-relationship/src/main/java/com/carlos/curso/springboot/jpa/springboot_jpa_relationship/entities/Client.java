@@ -2,8 +2,8 @@ package com.carlos.curso.springboot.jpa.springboot_jpa_relationship.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="clients")
@@ -24,10 +24,17 @@ public class Client {
             inverseJoinColumns = @JoinColumn(name = "id_direcciones"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"id_direcciones"})
     )
-    private List<Address> addresses;
+    private Set<Address> addresses;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
+    private Set<Invoice> invoices;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
+    private ClientDetails clientDetails;
 
     public Client() {
-        this.addresses = new ArrayList<>();
+        this.addresses = new HashSet<>();
+        this.invoices = new HashSet<>();
     }
 
     public Client(String name, String lastname) {
@@ -60,16 +67,56 @@ public class Client {
         this.lastname = lastname;
     }
 
-    public List<Address> getAddresses() {
+    public Set<Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(List<Address> addresses) {
+    public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public Set<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(Set<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    public Client addInvoice(Invoice invoice) {
+        this.invoices.add(invoice);
+        invoice.setClient(this);
+        return this;
+    }
+
+    public void removeInvoice(Invoice invoice) {
+        this.invoices.remove(invoice);
+        invoice.setClient(null);
+    }
+
+    public ClientDetails getClientDetails() {
+        return clientDetails;
+    }
+
+    public void setClientDetails(ClientDetails clientDetails) {
+        this.clientDetails = clientDetails;
+        this.clientDetails.setClient(this);
+    }
+
+    public void removeClientDetails(ClientDetails clientDetails) {
+        this.clientDetails.setClient(null);
+        this.clientDetails = null;
     }
 
     @Override
     public String toString() {
-        return "{id=" + id + ", name=" + name + ", lastname=" + lastname + ", addresses=" + addresses + "}";
+        return "{" +
+                "id=" + id +
+                ", name=" + name +
+                ", lastname=" + lastname +
+                ", addresses=" + addresses +
+                ", invoices=" + invoices +
+                ", clientDetails=" + clientDetails +
+                "}";
     }
 }
