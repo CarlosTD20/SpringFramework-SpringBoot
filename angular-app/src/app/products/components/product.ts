@@ -25,17 +25,23 @@ export class Product implements OnInit {
 
   addProduct(product: ProductModel): void {
     if (product.id > 0) {
-      this.products = this.products.map(p => {
-        if (p.id === product.id) {
-          return { ...product };
-        }
-        return p;
-      });
+      this.service.update(product).subscribe(updatedProduct => {
+
+        this.products = this.products.map(p => {
+          if (p.id === product.id) {
+            return { ...updatedProduct };
+          }
+          return p;
+        });
+      })
     } else {
-      this.products = [...this.products, { ...product, id: this.products.length + 1 }];
+      this.service.create(product).subscribe(newProduct => {
+        this.products = [...this.products, { ...newProduct }];
+      })
+
     }
 
-    this.productSelected= new ProductModel();
+    this.productSelected = new ProductModel();
   }
 
   onUpdateProduct(productRow: ProductModel): void {
@@ -43,6 +49,7 @@ export class Product implements OnInit {
   }
 
   onDeleteProduct(id: number): void {
-    this.products = this.products.filter(p => p.id !== id);
+    this.service.delete(id).subscribe(() => { this.products = this.products.filter(p => p.id !== id); })
+
   }
 }
